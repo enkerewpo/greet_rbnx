@@ -192,15 +192,16 @@ class GreetController:
 
     # ── status / teardown ────────────────────────────────────────────────────
     def status(self, run_id=None):
-        """Canonical async status. A persistent watch reports SUCCEEDED once the
-        loop is up — the 'start greeting' intent is complete and the loop keeps
-        running in the background until cancel. Returns None for an unknown
-        run_id so the caller can report 'no such run'."""
+        """Canonical async status of a LONG-LIVED task. While the watch is up it
+        reports RUNNING — never SUCCEEDED — so the executor keeps monitoring it
+        and the greet tree stays live in the forest, letting other RTDL branches
+        run in parallel. It only reaches a terminal state (CANCELED) on cancel.
+        Returns None for an unknown run_id so the caller can report 'no such run'."""
         if run_id and run_id != self._run_id:
             return None
         if self._state == "running":
-            return {"state": "SUCCEEDED",
-                    "detail": f"greeting watch running; last: {self._last_line}"}
+            return {"state": "RUNNING",
+                    "detail": f"greeting watch active; last: {self._last_line}"}
         if self._state == "canceled":
             return {"state": "CANCELED", "detail": "greeting watch stopped"}
         return {"state": "PENDING", "detail": self._state}

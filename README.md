@@ -13,7 +13,7 @@ camera/rgb → YOLO (filter far/small) → (people) → VLM line → speech/spea
 ## Capabilities (async triplet)
 
 - `robonix/skill/greet/greet` — start the greeting watch (returns a run_id)
-- `robonix/skill/greet/greet/status` — poll (SUCCEEDED once the loop is up)
+- `robonix/skill/greet/greet/status` — poll (stays RUNNING while watching; the executor keeps monitoring this long-lived parallel task)
 - `robonix/skill/greet/greet/cancel` — stop it
 
 ## Config (Driver CMD_INIT)

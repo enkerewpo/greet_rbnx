@@ -70,9 +70,10 @@ from greet_mcp import (  # noqa: E402
 
 @greet_skill.mcp("robonix/skill/greet/greet")
 def greet(req: Greet_Request) -> Greet_Response:
-    """Start the passerby-greeting watch (async). Returns a run_id; the
-    executor polls status() and may cancel() it. The watch is persistent —
-    status reports SUCCEEDED once the loop is up and it keeps running."""
+    """Start the passerby-greeting watch (async). Returns a run_id. The watch is
+    LONG-LIVED: status() stays RUNNING while it watches (never SUCCEEDED), so the
+    executor keeps monitoring it and the tree stays live in the forest — other
+    RTDL branches run in parallel. Only cancel() ends it."""
     if ctrl is None:
         return Greet_Response(accepted=False, run_id="", message="controller not initialized")
     rid = ctrl.start()
@@ -81,8 +82,8 @@ def greet(req: Greet_Request) -> Greet_Response:
 
 @greet_skill.mcp("robonix/skill/greet/greet/status")
 def status(req: GetGreetStatus_Request) -> GetGreetStatus_Response:
-    """Poll the watch. Empty run_id = most recent. Persistent watch → once the
-    loop is up the start intent is SUCCEEDED (loop keeps running until cancel)."""
+    """Poll the watch. Empty run_id = most recent. Long-lived task: stays RUNNING
+    while active so the executor keeps monitoring it; terminal only on cancel."""
     if ctrl is None:
         return GetGreetStatus_Response(known=False, state="PENDING", detail="not initialized")
     s = ctrl.status(req.run_id or None)
