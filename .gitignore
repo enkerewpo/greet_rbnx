@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+rbnx-build/
+*.bak-mcp
+*.bak-target
+launch_params_*
+uv.lock
