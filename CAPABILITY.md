@@ -1,6 +1,4 @@
 ---
-provider: greet
-kind: skill
 description: Passerby greeting — watch the front camera, detect people (YOLO) and announce a friendly make-way line (VLM) over the speaker.
 ---
 
